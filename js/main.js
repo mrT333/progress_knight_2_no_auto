@@ -440,7 +440,7 @@ function goBankrupt() {
     gameData.coins = 0
     gameData.currentProperty = gameData.itemData["Homeless"]
     gameData.currentMisc = []
-    autoBuyEnabled = true
+    autoBuyEnabled = false
 }
 
 async function downloadFile() {
@@ -471,7 +471,7 @@ function togglePause() {
 }
 
 function forceAutobuy() {
-    autoBuyEnabled = true
+    autoBuyEnabled = false
 }
 
 function setCurrentProperty(propertyName) {
@@ -956,7 +956,7 @@ function rebirthReset(set_tab_to_jobs = true) {
     gameData.stats.EvilPerSecond = 0
     gameData.stats.maxEvilPerSecond = 0
     gameData.stats.maxEvilPerSecondRt = 0
-    autoBuyEnabled = true
+    autoBuyEnabled = false
 
     for (const taskName in gameData.taskData) {
         const task = gameData.taskData[taskName]

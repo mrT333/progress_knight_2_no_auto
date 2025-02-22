@@ -134,7 +134,7 @@
 
 var tempData = {}
 
-var autoBuyEnabled = true
+var autoBuyEnabled = false
 
 const updateSpeed = 20
 const baseLifespan = 365 * 70
