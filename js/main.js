@@ -545,6 +545,7 @@ function increaseCoins() {
 }
 
 function autoPerks() {
+    return
     // perks
     if (gameData.perks.auto_boost == 1 && !gameData.boost_active && gameData.boost_cooldown <= 0)
         applyBoost()
@@ -578,6 +579,7 @@ function autoPerks() {
 }
 
 function autoPromote() {
+    return
     let maxIncome = 0;
     for (const key in gameData.taskData) {
         const task = gameData.taskData[key]
@@ -592,6 +594,7 @@ function autoPromote() {
 }
 
 function autoBuy() {
+    return
     if (!autoBuyEnabled) return
 
     let usedExpense = 0
@@ -1596,3 +1599,97 @@ setInterval(function () {
     fpsOut.innerHTML = (1000 / frameTime).toFixed(1) + " fps";
 }, 1000);
 */
+
+(function() {
+    // Save the original function.
+    const originalGetUnpausedGameSpeed = window.getUnpausedGameSpeed;
+    
+    // Internal state: whether speed multiplier is active and the current factor.
+    let speedEnabled = false;
+    let speedFactor = 10; // desired overall multiplier
+
+    // Function to update the display texts on the buttons.
+    function updateButtonTexts() {
+        toggleBtn.textContent = speedEnabled ? `Speed ON (${speedFactor}x)` : `Speed OFF (${speedFactor}x)`;
+        incBtn.textContent = `Increase Speed (Current: ${speedFactor}x)`;
+        decBtn.textContent = `Decrease Speed (Current: ${speedFactor}x)`;
+    }
+    
+    // Override getUnpausedGameSpeed to apply the multiplier.
+    function overrideTimeFunctions() {
+        window.getUnpausedGameSpeed = function() {
+            return originalGetUnpausedGameSpeed() * speedFactor;
+        };
+    }
+    
+    // Restore original getUnpausedGameSpeed.
+    function restoreTimeFunctions() {
+        window.getUnpausedGameSpeed = originalGetUnpausedGameSpeed;
+    }
+    
+    // Create a container for our buttons.
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.bottom = "10px";
+    container.style.left = "10px";
+    container.style.zIndex = 9999;
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.gap = "5px";
+    container.style.padding = "5px";
+    container.style.backgroundColor = "#eee";
+    container.style.border = "1px solid #ccc";
+    
+    // Toggle button.
+    const toggleBtn = document.createElement("button");
+    toggleBtn.addEventListener("click", function() {
+        speedEnabled = !speedEnabled;
+        if (speedEnabled) {
+            overrideTimeFunctions();
+            container.style.backgroundColor = "#AAF";
+            console.log(`Speed acceleration activated: Factor = ${speedFactor}`);
+        } else {
+            restoreTimeFunctions();
+            container.style.backgroundColor = "#eee";
+            console.log("Speed acceleration deactivated");
+        }
+        updateButtonTexts();
+    });
+    
+    // Increase speed factor button.
+    const incBtn = document.createElement("button");
+    incBtn.addEventListener("click", function() {
+        speedFactor += 1;
+        if (speedEnabled) {
+            overrideTimeFunctions();
+        }
+        console.log("Speed factor increased to", speedFactor);
+        updateButtonTexts();
+    });
+    
+    // Decrease speed factor button.
+    const decBtn = document.createElement("button");
+    decBtn.addEventListener("click", function() {
+        if (speedFactor > 1) {
+            speedFactor -= 1;
+            if (speedEnabled) {
+                overrideTimeFunctions();
+            }
+            console.log("Speed factor decreased to", speedFactor);
+            updateButtonTexts();
+        }
+    });
+    
+    // Append buttons to the container.
+    container.appendChild(toggleBtn);
+    container.appendChild(incBtn);
+    container.appendChild(decBtn);
+    
+    // Add the container to the document.
+    document.body.appendChild(container);
+    
+    // Initialize button texts.
+    updateButtonTexts();
+    
+    console.log("Time acceleration controls injected (patching only getUnpausedGameSpeed).");
+})();
