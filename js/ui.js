@@ -231,7 +231,7 @@ function renderProgressBar(task, progressFill, progressBar){
         progressFill.classList.remove("progress-fill-hero")
         progressBar.classList.remove("progress-bar-hero")
 
-        if (task == gameData.currentJob) {
+        if (task == gameData.currentJob || task == gameData.currentSkill) {
             progressFill.classList.add("current")
             progressFill.classList.remove("current-hero")
         }

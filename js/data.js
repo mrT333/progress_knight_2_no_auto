@@ -55,6 +55,7 @@
     rebirthFiveTime: 0,
 
     currentJob: null,
+    currentSkill: null,
     currentProperty: null,
     currentMisc: null,
 

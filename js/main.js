@@ -951,7 +951,7 @@ function rebirthReset(set_tab_to_jobs = true) {
     gameData.days = 365 * 14
     gameData.realtime = 0
     gameData.currentJob = gameData.taskData["Beggar"]
-    // gameData.currentSkill = gameData.taskData["Concentration"]
+    gameData.currentSkill = gameData.taskData["Concentration"]
     gameData.currentProperty = gameData.itemData["Homeless"]
     gameData.currentMisc = []
     gameData.stats.EssencePerSecond = 0
@@ -1149,7 +1149,7 @@ function assignMethods() {
     }
 
     gameData.currentJob = gameData.taskData[gameData.currentJob.name]
-    // gameData.currentSkill = gameData.taskData[gameData.currentSkill.name]
+    gameData.currentSkill = gameData.taskData[gameData.currentSkill.name]
     gameData.currentProperty = gameData.itemData[gameData.currentProperty.name]
     const newArray = []
     for (const misc of gameData.currentMisc) {
@@ -1349,8 +1349,13 @@ function doCurrentTask(task) {
 
 function setTask(taskName) {
     var task = gameData.taskData[taskName]
-    // task instanceof Job ? gameData.currentJob = task : gameData.currentSkill = task
-    task instanceof Job ? gameData.currentJob = task : task = task
+    task instanceof Job ? gameData.currentJob = task : gameData.currentSkill = task
+    // task instanceof Job ? gameData.currentJob = task : task = task
+}
+
+function setProperty(propertyName) {
+    var property = gameData.itemData[propertyName]
+    gameData.currentProperty = property
 }
 
 function update(needUpdateUI = true) {
@@ -1370,6 +1375,7 @@ function update(needUpdateUI = true) {
     //     }
     // }
     doCurrentTask(gameData.currentJob)
+    doCurrentTask(gameData.currentSkill)
     increaseCoins()
 
     gameData.evil_perks_points += applySpeed(getEvilPerksGeneration())
@@ -1550,6 +1556,7 @@ createGameObjects(gameData.itemData, itemBaseData)
 createGameObjects(milestoneData, milestoneBaseData)
 
 gameData.currentJob = gameData.taskData["Beggar"]
+gameData.currentSkill = gameData.taskData["Concentration"]
 gameData.currentProperty = gameData.itemData["Homeless"]
 gameData.currentMisc = []
 
