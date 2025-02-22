@@ -1609,33 +1609,21 @@ setInterval(function () {
 */
 
 (function() {
-    // Save the original function.
-    const originalGetUnpausedGameSpeed = window.getUnpausedGameSpeed;
+    // Set the default multiplier.
+    window.customSpeedFactor = 1;
     
-    // Internal state: whether speed multiplier is active and the current factor.
+    // Internal state.
     let speedEnabled = false;
-    let speedFactor = 10; // desired overall multiplier
-
-    // Function to update the display texts on the buttons.
+    let speedFactor = 10; // desired multiplier when enabled
+    
+    // Function to update the button texts.
     function updateButtonTexts() {
         toggleBtn.textContent = speedEnabled ? `Speed ON (${speedFactor}x)` : `Speed OFF (${speedFactor}x)`;
         incBtn.textContent = `Increase Speed (Current: ${speedFactor}x)`;
         decBtn.textContent = `Decrease Speed (Current: ${speedFactor}x)`;
     }
     
-    // Override getUnpausedGameSpeed to apply the multiplier.
-    function overrideTimeFunctions() {
-        window.getUnpausedGameSpeed = function() {
-            return originalGetUnpausedGameSpeed() * speedFactor;
-        };
-    }
-    
-    // Restore original getUnpausedGameSpeed.
-    function restoreTimeFunctions() {
-        window.getUnpausedGameSpeed = originalGetUnpausedGameSpeed;
-    }
-    
-    // Create a container for our buttons.
+    // Create a container for the controls.
     const container = document.createElement("div");
     container.style.position = "fixed";
     container.style.bottom = "10px";
@@ -1652,15 +1640,10 @@ setInterval(function () {
     const toggleBtn = document.createElement("button");
     toggleBtn.addEventListener("click", function() {
         speedEnabled = !speedEnabled;
-        if (speedEnabled) {
-            overrideTimeFunctions();
-            container.style.backgroundColor = "#AAF";
-            console.log(`Speed acceleration activated: Factor = ${speedFactor}`);
-        } else {
-            restoreTimeFunctions();
-            container.style.backgroundColor = "#eee";
-            console.log("Speed acceleration deactivated");
-        }
+        // When toggled, update the global multiplier.
+        window.customSpeedFactor = speedEnabled ? speedFactor : 1;
+        container.style.backgroundColor = speedEnabled ? "#AAF" : "#eee";
+        console.log(`Speed acceleration ${speedEnabled ? "activated" : "deactivated"}: Factor = ${window.customSpeedFactor}`);
         updateButtonTexts();
     });
     
@@ -1669,7 +1652,7 @@ setInterval(function () {
     incBtn.addEventListener("click", function() {
         speedFactor += 1;
         if (speedEnabled) {
-            overrideTimeFunctions();
+            window.customSpeedFactor = speedFactor;
         }
         console.log("Speed factor increased to", speedFactor);
         updateButtonTexts();
@@ -1681,7 +1664,7 @@ setInterval(function () {
         if (speedFactor > 1) {
             speedFactor -= 1;
             if (speedEnabled) {
-                overrideTimeFunctions();
+                window.customSpeedFactor = speedFactor;
             }
             console.log("Speed factor decreased to", speedFactor);
             updateButtonTexts();
@@ -1693,11 +1676,9 @@ setInterval(function () {
     container.appendChild(incBtn);
     container.appendChild(decBtn);
     
-    // Add the container to the document.
+    // Add the container to the page.
     document.body.appendChild(container);
-    
-    // Initialize button texts.
     updateButtonTexts();
     
-    console.log("Time acceleration controls injected (patching only getUnpausedGameSpeed).");
+    console.log("Speed control panel injected.");
 })();
