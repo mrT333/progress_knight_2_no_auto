@@ -1600,77 +1600,76 @@ setInterval(function () {
 }, 1000);
 */
 
-(function() {
-    // Set the default multiplier.
-    window.customSpeedFactor = 1;
-    
-    // Internal state.
-    let speedEnabled = false;
-    let speedFactor = 10; // desired multiplier when enabled
-    
-    // Function to update the button texts.
-    function updateButtonTexts() {
-        toggleBtn.textContent = speedEnabled ? `Speed ON (${speedFactor}x)` : `Speed OFF (${speedFactor}x)`;
-        incBtn.textContent = `Increase Speed (Current: ${speedFactor}x)`;
-        decBtn.textContent = `Decrease Speed (Current: ${speedFactor}x)`;
+
+// Set the default multiplier.
+window.customSpeedFactor = 1;
+
+// Internal state.
+let speedEnabled = false;
+let speedFactor = 10; // desired multiplier when enabled
+
+// Function to update the button texts.
+function updateButtonTexts() {
+    toggleBtn.textContent = speedEnabled ? `Speed ON (${speedFactor}x)` : `Speed OFF (${speedFactor}x)`;
+    incBtn.textContent = `Increase Speed (Current: ${speedFactor}x)`;
+    decBtn.textContent = `Decrease Speed (Current: ${speedFactor}x)`;
+}
+
+// Create a container for the controls.
+const container = document.createElement("div");
+container.style.position = "fixed";
+container.style.bottom = "10px";
+container.style.left = "10px";
+container.style.zIndex = 9999;
+container.style.display = "flex";
+container.style.flexDirection = "column";
+container.style.gap = "5px";
+container.style.padding = "5px";
+container.style.backgroundColor = "#eee";
+container.style.border = "1px solid #ccc";
+
+// Toggle button.
+const toggleBtn = document.createElement("button");
+toggleBtn.addEventListener("click", function() {
+    speedEnabled = !speedEnabled;
+    // When toggled, update the global multiplier.
+    window.customSpeedFactor = speedEnabled ? speedFactor : 1;
+    container.style.backgroundColor = speedEnabled ? "#AAF" : "#eee";
+    console.log(`Speed acceleration ${speedEnabled ? "activated" : "deactivated"}: Factor = ${window.customSpeedFactor}`);
+    updateButtonTexts();
+});
+
+// Increase speed factor button.
+const incBtn = document.createElement("button");
+incBtn.addEventListener("click", function() {
+    speedFactor += 1;
+    if (speedEnabled) {
+        window.customSpeedFactor = speedFactor;
     }
-    
-    // Create a container for the controls.
-    const container = document.createElement("div");
-    container.style.position = "fixed";
-    container.style.bottom = "10px";
-    container.style.left = "10px";
-    container.style.zIndex = 9999;
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.gap = "5px";
-    container.style.padding = "5px";
-    container.style.backgroundColor = "#eee";
-    container.style.border = "1px solid #ccc";
-    
-    // Toggle button.
-    const toggleBtn = document.createElement("button");
-    toggleBtn.addEventListener("click", function() {
-        speedEnabled = !speedEnabled;
-        // When toggled, update the global multiplier.
-        window.customSpeedFactor = speedEnabled ? speedFactor : 1;
-        container.style.backgroundColor = speedEnabled ? "#AAF" : "#eee";
-        console.log(`Speed acceleration ${speedEnabled ? "activated" : "deactivated"}: Factor = ${window.customSpeedFactor}`);
-        updateButtonTexts();
-    });
-    
-    // Increase speed factor button.
-    const incBtn = document.createElement("button");
-    incBtn.addEventListener("click", function() {
-        speedFactor += 1;
+    console.log("Speed factor increased to", speedFactor);
+    updateButtonTexts();
+});
+
+// Decrease speed factor button.
+const decBtn = document.createElement("button");
+decBtn.addEventListener("click", function() {
+    if (speedFactor > 1) {
+        speedFactor -= 1;
         if (speedEnabled) {
             window.customSpeedFactor = speedFactor;
         }
-        console.log("Speed factor increased to", speedFactor);
+        console.log("Speed factor decreased to", speedFactor);
         updateButtonTexts();
-    });
-    
-    // Decrease speed factor button.
-    const decBtn = document.createElement("button");
-    decBtn.addEventListener("click", function() {
-        if (speedFactor > 1) {
-            speedFactor -= 1;
-            if (speedEnabled) {
-                window.customSpeedFactor = speedFactor;
-            }
-            console.log("Speed factor decreased to", speedFactor);
-            updateButtonTexts();
-        }
-    });
-    
-    // Append buttons to the container.
-    container.appendChild(toggleBtn);
-    container.appendChild(incBtn);
-    container.appendChild(decBtn);
-    
-    // Add the container to the page.
-    document.body.appendChild(container);
-    updateButtonTexts();
-    
-    console.log("Speed control panel injected.");
-})();
+    }
+});
+
+// Append buttons to the container.
+container.appendChild(toggleBtn);
+container.appendChild(incBtn);
+container.appendChild(decBtn);
+
+// Add the container to the page.
+document.body.appendChild(container);
+updateButtonTexts();
+
+console.log("Speed control panel injected.");
