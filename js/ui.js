@@ -86,6 +86,7 @@ function updateUI() {
 
 function renderSideBar() {
     const task = gameData.currentJob
+    // var currentTask = taskType == "job" ? gameData.currentJob : gameData.currentSkill
     const quickTaskDisplayElement = document.getElementById("quickTaskDisplay")
 
     const progressBar = quickTaskDisplayElement.getElementsByClassName("job")[0]
@@ -246,7 +247,7 @@ function renderProgressBar(task, progressFill, progressBar){
 
 function renderJobs() {
     for (const key in gameData.taskData) {
-        const task = gameData.taskData[key]
+        const task = gameData.currentJob
         if (!(task instanceof Job)) continue
 
         const row = getRowByName(task.name)
@@ -873,8 +874,10 @@ function createRow(templates, name, categoryName, categoryType) {
     row.getElementsByClassName("tooltipText")[0].textContent = tooltips[name]
     row.id = "row" + removeSpaces(removeStrangeCharacters(name))
 
-    if (categoryType == itemCategories) {
-        row.getElementsByClassName("button")[0].onclick = categoryName == "Properties" ? () => { setCurrentProperty(name) } : () => { setMisc(name) }
+    if (categoryType != itemCategories) {
+        row.getElementsByClassName("progressBar")[0].onclick = function() {setTask(name)}
+    } else {
+        row.getElementsByClassName("button")[0].onclick = categoryName == "Properties" ? function() {setProperty(name)} : function() {setMisc(name)}
     }
 
     return row
