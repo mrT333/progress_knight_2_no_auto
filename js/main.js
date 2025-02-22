@@ -1338,15 +1338,23 @@ function stopOffline(){
     in_offline_progress = false;
 }
 
+function doCurrentTask(task) {
+    task.increaseXp()
+    if (task instanceof Job) {
+        increaseCoins()
+    }
+}
 function update(needUpdateUI = true) {
     if (in_offline_progress && needUpdateUI)
         return
     makeHeroes()
     increaseRealtime()
     increaseDays()
-    autoPerks()
-    autoPromote()
-    autoBuy()
+    // autoPerks()
+    // autoPromote()
+    // autoBuy()
+    doCurrentTask(gameData.currentJob)
+    doCurrentTask(gameData.currentSkill)
     applyExpenses()
     for (const key in gameData.taskData) {
         const task = gameData.taskData[key]
